@@ -313,7 +313,7 @@ class Fast_CrossEntropyLoss(torch.autograd.Function):
                     SOFTCAP          = logit_softcapping,
                     DO_LOGIT_SCALING = DO_LOGIT_SCALING,
                     LOGIT_SCALE      = logit_scaling,
-                    num_warps        = num_warps,
+                    num_warps        = num_warps // 2,
                 )
         else:
             # For large vocabs > 65336 like Gemma 256K
@@ -327,12 +327,13 @@ class Fast_CrossEntropyLoss(torch.autograd.Function):
                     labels,
                     VOCAB_SIZE       = vocab_size,
                     N_CHUNKS         = n_chunks,
-                    BLOCK_SIZE       = MAX_FUSED_SIZE,
+                    #BLOCK_SIZE       = MAX_FUSED_SIZE,
+                    BLOCK_SIZE = 1024,
                     DO_SOFTCAPPING   = DO_SOFTCAPPING,
                     SOFTCAP          = logit_softcapping,
                     DO_LOGIT_SCALING = DO_LOGIT_SCALING,
                     LOGIT_SCALE      = logit_scaling,
-                    num_warps        = 32,
+                    num_warps        = 16,
                 )
             # logsumexp(chunked_logsumexp) - x
             # Do the -x separately
